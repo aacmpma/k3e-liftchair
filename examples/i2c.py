@@ -5,6 +5,7 @@
 
 import time
 import board
+from datetime import datetime
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
 
 
@@ -30,7 +31,7 @@ print("")
 ina219.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 ina219.shunt_adc_resolution = ADCResolution.ADCRES_12BIT_32S
 # optional : change voltage range to 16V
-ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
+#ina219.bus_voltage_range = BusVoltageRange.RANGE_16V
 
 # measure and display loop
 while True:
@@ -46,6 +47,9 @@ while True:
     print("Shunt Current  : {:7.4f}  A".format(current / 1000))
     print("Power Calc.    : {:8.5f} W".format(bus_voltage * (current / 1000)))
     print("Power Register : {:6.3f}   W".format(power))
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    print("Current Time   :", current_time)
     print("")
 
     # Check internal calculations haven't overflowed (doesn't detect ADC overflows)

@@ -1,23 +1,30 @@
 import RPi.GPIO as GPIO
 import time
 
-GFW = 20
-GBW = 21
+GFW = 12
+GFWE = 25
+GBW = 24
+GBWE = 23
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GFW,GPIO.OUT)
+GPIO.setup(GFWE,GPIO.OUT)
 GPIO.setup(GBW,GPIO.OUT)
+GPIO.setup(GBWE,GPIO.OUT)
+
+GPIO.output(GFWE, 1)
+GPIO.output(GBWE, 1)
 
 def cont():
     print("---- Continuo ---")
     GPIO.output(GFW,True)
     time.sleep(3)
     GPIO.output(GFW,False)
-    time.sleep(10)
+    time.sleep(3)
     GPIO.output(GFW,True)
     time.sleep(3)
     GPIO.output(GFW,False)
-    time.sleep(2)
+    time.sleep(3)
 
 def step1():
     dir = 0
@@ -49,7 +56,7 @@ def step2():
         print("Ciclo completo")
 
 try:
-    cont() 
+#    cont() 
     step1()
     step2()
 

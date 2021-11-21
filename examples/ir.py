@@ -1,9 +1,11 @@
+import sys
 import RPi.GPIO as GPIO
 from time import time
 
+
 def setup():
     GPIO.setmode(GPIO.BCM)  # Numbers GPIOs by physical location
-    GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
 def binary_aquire(pin, duration):
@@ -58,17 +60,19 @@ if __name__ == "__main__":
         print("Starting IR Listener")
         while True:
             print("Waiting for signal")
-            GPIO.wait_for_edge(11, GPIO.FALLING)
-            code = on_ir_receive(11)
+            GPIO.wait_for_edge(4, GPIO.FALLING)
+            code = on_ir_receive(4)
             if code:
                 print(str(hex(code)))
             else:
                 print("Invalid code")
     except KeyboardInterrupt:
         pass
-    except RuntimeError:
+    except RuntimeError as e:
         # this gets thrown when control C gets pressed
         # because wait_for_edge doesn't properly pass this on
-        pass
+        print("some run error: " + str(e))
+    except Exception as e:
+        print("some error: " + str(e))
     print("Quitting")
     destroy()
