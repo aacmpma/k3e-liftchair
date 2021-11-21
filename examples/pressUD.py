@@ -5,6 +5,13 @@ import mariadb
 import RPi.GPIO as GPIO
 from datetime import datetime
 
+
+# CONS 
+DB_TIMEOUT = 60
+
+# CONS EVENTS
+E_RISING = "RISING"
+
 BUZ = 18
 GPP = 26
 GFW = 12
@@ -25,8 +32,23 @@ GPIO.output(GBWE, 1)
 
 GPIO.setwarnings(True)
 
+def create_connection_pool():
+    # Create Connection Pool
+    pool = mariadb.ConnectionPool(
+       user="k3e_liftchair",
+       password="2de9ll3",
+       host="192.168.1.32",
+       port=3306,
+       pool_name="k3e_liftchair-app",
+       pool_size=13,
+       connect_timeout=DB_TIMEOUT
+    )
+    # Return Connection Pool
+    return pool
+
+
 def motor_fw(channel):
-    print("NEW***2")
+    print("NEW***3")
     GPIO.output(BUZ, GPIO.HIGH)
     time.sleep(0.250)
     GPIO.output(BUZ, GPIO.LOW)
@@ -40,9 +62,10 @@ def motor_fw(channel):
 GPIO.add_event_detect(GPP, GPIO.RISING, callback = motor_fw, bouncetime = 200)
 
 try:
-    #os.system("clear")
-    conn = mariadb.connect(user="k3e_liftchair1", password="2de9ll3", host="192.0.1.32", port=3306, database="K3E_LIFTCHAIR")
-    print("Connected...", flush=True)
+    os.system("clear")
+    pool = create_connection_pool()
+    pconn = pool.get_connection()    
+    print("Connected pool...", flush=True)
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -57,6 +80,16 @@ except mariadb.Error as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
 
+except mariadb.PoolError as e:
+    print(f"Error opening connection from pool: {e}")
+    sys.exit(1)
+
 finally:
-    print("System clean up...")
-    GPIO.cleanup() # cleanup all GPIO
+    print("Closing and System clean up:")
+    try:
+        pool.close()                        # close DB connection
+        print("   ...DB closed")
+    except:
+        print("   ***")
+    GPIO.cleanup()                          # cleanup all GPIO
+    print("   ...GPIO cleanup")
