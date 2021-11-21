@@ -39,6 +39,7 @@ def create_connection_pool():
        password="2de9ll3",
        host="192.168.1.32",
        port=3306,
+       database="K3E_LIFTCHAIR",
        pool_name="k3e_liftchair-app",
        pool_size=13,
        connect_timeout=DB_TIMEOUT
@@ -46,9 +47,20 @@ def create_connection_pool():
     # Return Connection Pool
     return pool
 
+pool = create_connection_pool()
+pconn = pool.get_connection()    
+
+def add_event(device, type, gpio=0):
+    try: 
+        cur = pconn.cursor()
+        cur.execute("INSERT INTO tb_events VALUES (NULL, now(), ?, ?, ?)", (device, type, gpio))
+        pconn.close()
+    except mariadb.Error as e: 
+        print(f"DB Error: {e}")
 
 def motor_fw(channel):
-    print("NEW***3")
+    print("NEW***")
+    add_event("FW", E_RISING, channel)
     GPIO.output(BUZ, GPIO.HIGH)
     time.sleep(0.250)
     GPIO.output(BUZ, GPIO.LOW)
@@ -63,14 +75,13 @@ GPIO.add_event_detect(GPP, GPIO.RISING, callback = motor_fw, bouncetime = 200)
 
 try:
     os.system("clear")
-    pool = create_connection_pool()
-    pconn = pool.get_connection()    
-    print("Connected pool...", flush=True)
+    print("Connected pool...")
+    add_event("FW", E_RISING, 23)
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        print("Current Time   :", current_time)
-        print("Value          :", GPIO.input(GPP), flush=True)
+        #print("Current Time   :", current_time)
+        #print("Value          :", GPIO.input(GPP))
         time.sleep(0.5)
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
