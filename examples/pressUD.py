@@ -1,6 +1,7 @@
 import os
 import sys
 import time 
+import mariadb
 import RPi.GPIO as GPIO
 from datetime import datetime
 
@@ -25,7 +26,7 @@ GPIO.output(GBWE, 1)
 GPIO.setwarnings(True)
 
 def motor_fw(channel):
-    print("NEWWWWW")
+    print("NEW***2")
     GPIO.output(BUZ, GPIO.HIGH)
     time.sleep(0.250)
     GPIO.output(BUZ, GPIO.LOW)
@@ -39,17 +40,23 @@ def motor_fw(channel):
 GPIO.add_event_detect(GPP, GPIO.RISING, callback = motor_fw, bouncetime = 200)
 
 try:
-    os.system("clear")
+    #os.system("clear")
+    conn = mariadb.connect(user="k3e_liftchair1", password="2de9ll3", host="192.0.1.32", port=3306, database="K3E_LIFTCHAIR")
+    print("Connected...", flush=True)
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        #print("Current Time   :", current_time)
-        #print("Value          :", GPIO.input(GPP))
+        print("Current Time   :", current_time)
+        print("Value          :", GPIO.input(GPP), flush=True)
         time.sleep(0.5)
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     print("Keyboard interrupt")
 
+except mariadb.Error as e:
+    print(f"Error connecting to MariaDB Platform: {e}")
+    sys.exit(1)
+
 finally:
-    print("clean up")
+    print("System clean up...")
     GPIO.cleanup() # cleanup all GPIO
