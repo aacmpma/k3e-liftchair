@@ -51,8 +51,8 @@ def create_connection_pool():
             port=3306,
             database="K3E_LIFTCHAIR",
             pool_name="k3e_liftchair-app",
-            pool_size=13,
-            connect_timeout=60
+            pool_size=4,
+            connect_timeout=30
         )
         logging.debug("DB pool name: %s", pool.pool_name)
         return pool
