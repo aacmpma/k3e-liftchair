@@ -38,7 +38,8 @@ B_RPW = 1
 
 # level=logging.DEBUG or logging.INFO or logging.WARNING or logging.ERROR or logging.CRITICAL
 logging.basicConfig(filename=os.path.splitext(os.path.basename(__file__))[0]+".log", level=logging.DEBUG, format='%(asctime)s - %(levelname)s (%(funcName)s::%(threadName)s[%(lineno)d]): %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
-logging.info(E_INI)
+logging.info("")
+logging.info("************************* " + E_INI + " *************************")
 
 # Database creation pool and global variable
 def create_connection_pool():
@@ -116,7 +117,7 @@ def beep(channel, type):
         logging.debug("Beep in channel %s type: %s", channel, type)
         time.sleep(0.250)
         GPIO.output(P_BU1, GPIO.LOW)
-        logging.debug("Beep in channel %s off")
+        logging.debug("Beep in channel %s off", channel)
 
 # Insert into the table the event
 def add_event(device, type, channel=0):
@@ -127,7 +128,9 @@ def add_event(device, type, channel=0):
         pconn.close()
         logging.debug("DB pool close")
     except mariadb.Error as e: 
-        logging.error(f"DB Error: {e}")
+        logging.error(f"DB: {e}")
+    except mariadb.PoolError as e:
+        logging.error(f"DB pool: {e}")
 
 # Motor Forward (right)
 def motor_fw(channel):
@@ -172,12 +175,6 @@ except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     logging.info(E_KEY)
     add_event("K3E Lift Chair", E_KEY)
     print("Keyboard interrupt")
-
-except mariadb.Error as e:
-    logging.error(f"Error connecting to MariaDB Platform: {e}")
-
-except mariadb.PoolError as e:
-    logging.error(f"Error opening connection from pool: {e}")
 
 finally:
     cleanup()
