@@ -41,7 +41,7 @@ try:
         print("GPBTD --> " + str(GPIO.input(GPBTD)))
         print("GPCH1 --> " + str(GPIO.input(GPCH1)))
         print("GPCH2 --> " + str(GPIO.input(GPCH2)))
-        sleep(0.1)         # wait 0.1 seconds  
+        sleep(0.250)         # wait 0.1 seconds  
   
 finally:                   # this block will run no matter how the try block exits  
     GPIO.cleanup()         # clean up after yourself  

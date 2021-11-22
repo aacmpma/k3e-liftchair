@@ -46,18 +46,18 @@ def step1():
         time.sleep(5)
 
 def step2():
-    p=GPIO.PWM(GFW,100)
+    p=GPIO.PWM(GBW,100)
     print("---- Paso a Paso #2 ---")
     while True:
-        p.start(100) 
-        time.sleep(3)
-        p.ChangeDutyCycle(50) 
-        time.sleep(3)
+        p.start(10) 
+        time.sleep(2)
+        #p.ChangeDutyCycle(2) 
+        #time.sleep(2)
         print("Ciclo completo")
 
 try:
 #    cont() 
-    step1()
+    #step1()
     step2()
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:

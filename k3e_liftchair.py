@@ -168,7 +168,7 @@ try:
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        print("Current Time   :", current_time)
+        print("Current Time:", current_time)
         time.sleep(5)
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:

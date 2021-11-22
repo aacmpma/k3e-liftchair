@@ -13,14 +13,16 @@ DB_TIMEOUT = 60
 E_RISING = "RISING"
 
 BUZ = 18
-GPP = 26
+GPB = 19
+GPF = 26
 GFW = 12
 GFWE = 25
 GBW = 24
 GBWE = 23
 
 GPIO.setmode(GPIO.BCM)  # Numbers GPIOs by physical location
-GPIO.setup(GPP, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(GPB, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(GPF, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(BUZ, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(GFW, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(GFWE, GPIO.OUT, initial=GPIO.LOW)
@@ -71,7 +73,21 @@ def motor_fw(channel):
     else:
         GPIO.output(GFW,False)    
 
-GPIO.add_event_detect(GPP, GPIO.RISING, callback = motor_fw, bouncetime = 200)
+def motor_bw(channel):
+    print("NEW***")
+    add_event("BW", E_RISING, channel)
+    GPIO.output(BUZ, GPIO.HIGH)
+    time.sleep(0.250)
+    GPIO.output(BUZ, GPIO.LOW)
+    while GPIO.input(channel):
+        print("LOOP")
+        GPIO.output(GBW,True)    
+        time.sleep(0.1)
+    else:
+        GPIO.output(GBW,False)    
+
+GPIO.add_event_detect(GPB, GPIO.RISING, callback = motor_bw, bouncetime = 200)
+GPIO.add_event_detect(GPF, GPIO.RISING, callback = motor_fw, bouncetime = 200)
 
 try:
     os.system("clear")
@@ -80,9 +96,8 @@ try:
     while True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        #print("Current Time   :", current_time)
-        #print("Value          :", GPIO.input(GPP))
-        time.sleep(0.5)
+        print("Current Time   :", current_time)
+        time.sleep(5)
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     print("Keyboard interrupt")
