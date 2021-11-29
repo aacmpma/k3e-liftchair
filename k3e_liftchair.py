@@ -36,11 +36,11 @@ if __name__ == "__main__":
 
         # Add event detection
         logging.debug("Adding GPIO event detection")
-        GPIO.add_event_detect(set.P_SWU, GPIO.RISING, callback = fun.move_motor, bouncetime = 200)
-        GPIO.add_event_detect(set.P_SWD, GPIO.RISING, callback = fun.move_motor, bouncetime = 200)
-        GPIO.add_event_detect(set.P_SEU, GPIO.RISING, callback = fun.edge_switch, bouncetime = 200)
-        GPIO.add_event_detect(set.P_SEC, GPIO.RISING, callback = fun.edge_switch, bouncetime = 200)
-        GPIO.add_event_detect(set.P_SED, GPIO.RISING, callback = fun.edge_switch, bouncetime = 200)
+        GPIO.add_event_detect(set.P_SWU, GPIO.RISING, callback = fun.move_motor, bouncetime = 500)
+        GPIO.add_event_detect(set.P_SWD, GPIO.RISING, callback = fun.move_motor, bouncetime = 500)
+        GPIO.add_event_detect(set.P_SEU, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
+        GPIO.add_event_detect(set.P_SEC, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
+        GPIO.add_event_detect(set.P_SED, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
 
         # Start Thread check_battery
         logging.debug("Start thread check battery")

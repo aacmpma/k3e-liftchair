@@ -55,14 +55,14 @@ def check_battery():
             fun.add_charging(pin_name, bus_voltage+shunt_voltage, bus_voltage, shunt_voltage, current, bus_voltage*current, power)
 
         # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
-        logging.debug(
-            "VIN+:{:6.3f}V".format(bus_voltage+shunt_voltage) + 
-            " | VIN-:{:6.3f}V".format(bus_voltage) + 
-            " | SV:{:8.5f}V".format(shunt_voltage) +
-            " | SC:{:7.4f}A".format(current) +
-            " | PW:{:8.5f}W".format(bus_voltage*current) +
-            " | PR:{:6.3f}W".format(power)
-            )
+        # logging.debug(
+        #     "VIN+:{:6.3f}V".format(bus_voltage+shunt_voltage) + 
+        #     " | VIN-:{:6.3f}V".format(bus_voltage) + 
+        #     " | SV:{:8.5f}V".format(shunt_voltage) +
+        #     " | SC:{:7.4f}A".format(current) +
+        #     " | PW:{:8.5f}W".format(bus_voltage*current) +
+        #     " | PR:{:6.3f}W".format(power)
+        #     )
 
         # Check internal calculations haven't overflowed (doesn't detect ADC overflows)
         if ina219.overflow:

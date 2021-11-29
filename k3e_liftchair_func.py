@@ -100,9 +100,9 @@ def beep(channel, type):
     if type == set.B_EDG:
         wait_on1 = 0.250
         wait_off1 = 0.250
-        wait_on2 = 0.125
-        wait_off2 = 0.125
-        wait_on3 = 0.125
+        wait_on2 = 0.250
+        wait_off2 = 0.250
+        wait_on3 = 0.250
 
     logging.debug("Beep in channel %s type: %s", channel, type)
     GPIO.output(channel, GPIO.HIGH)
@@ -149,54 +149,80 @@ def add_charging(device, vin, vout, sv, sc, pw, pr):
 
 # Edge switch
 def edge_switch(channel):
-    pin_name = None
     if channel == set.P_SEU:
-        pin_name == "P_SEU"
+        pin_name = "P_SEU"
     elif channel == set.P_SEC:
-        pin_name == "P_SEC"
+        pin_name = "P_SEC"
     elif channel == set.P_SED:
-        pin_name == "P_SED"
+        pin_name = "P_SED"
+    else:
+        pin_name = "---"
+
     logging.debug(set.E_RISING + " Channel: %s", channel)
     add_event(pin_name, set.E_RISING, channel)
 
 
 # Move Motor
 def move_motor(channel):
-    pin_ena = set.P_LEN
+    sw = True
+    ban = True
+    
+    type_exit = 0
+    type_exit_name = "---"
+    
     if channel == set.P_SWU:
         pin = set.P_LPW
         pin_name = "P_LPW"
     elif channel == set.P_SWD:
         pin = set.P_RPW
         pin_name = "P_RPW"
-
-    logging.debug(set.E_RISING + " Channel: %s", channel)
-    logging.debug("Values pins enable >> R: %s - L: %s", GPIO.input(set.P_REN), GPIO.input(set.P_LEN))
-    logging.debug("Values pins switch edge >> U: %s - C: %s - D: %s", GPIO.input(set.P_SEU), GPIO.input(set.P_SEC), GPIO.input(set.P_SED))
-    add_event(pin_name, set.E_RISING, channel)
-
-    beep(set.P_BU1, set.B_MOT)
-
-    GPIO.output(pin_ena, True)
-    motor=GPIO.PWM(pin, set.M_INISPEED)
+    
+    pin_ena = set.P_LEN
+    motor = GPIO.PWM(pin, set.M_INISPEED)
 
     while GPIO.input(channel):
-        # if GPIO.input(P_SEU) and channel == P_SWU:
-        #     logging.debug(E_HIGH + " SW EDGE UP")
-        #     add_event("P_SEU", E_HIGH, P_SEU)
-        #     beep(P_BU1, B_EDG)
-        #     slow_stop(M_INISPEED, motor)
-        #     break
-        # if GPIO.input(P_SED) and channel == P_SWD:
-        #     logging.debug(E_HIGH + " SW EDGE DOWN")
-        #     add_event("P_SED", E_HIGH, P_SED)
-        #     beep(P_BU1, B_EDG)
-        #     slow_stop(M_INISPEED, motor)
-        #     break
-        motor.start(set.M_INISPEED)
-        time.sleep(0.1)
+        # Logging, event and beep start (just once)
+        if ban:
+            ban = False
+            logging.debug(set.E_RISING + " Channel: %s", channel)
+            logging.debug("Values pins enable >> R: %s - L: %s", GPIO.input(set.P_REN), GPIO.input(set.P_LEN))
+            logging.debug("Values pins switch edge >> U: %s - C: %s - D: %s", GPIO.input(set.P_SEU), GPIO.input(set.P_SEC), GPIO.input(set.P_SED))
+            add_event(pin_name, set.E_RISING, channel)
+            beep(set.P_BU1, set.B_MOT)
 
-    GPIO.output(pin, False)
+        # Check if edge sw up is high and the up switch is press
+        if GPIO.input(set.P_SEU) and channel == set.P_SWU:
+            type_exit = set.P_SEU
+            type_exit_name = "P_SEU"
+            break
+
+        # Check if edge sw down is high and the down switch is press
+        if GPIO.input(set.P_SED) and channel == set.P_SWD:
+            type_exit = set.P_SED
+            type_exit_name = "P_SED"
+            break
+
+        # Activate the motor once
+        if sw:
+            sw = False
+            GPIO.output(pin_ena, True)
+            motor.start(set.M_INISPEED)
+
+        # Wait
+        time.sleep(0.05)
+
+    # Logging, event and beep if edge sw is reached
+    if type_exit != 0:
+        #slow_stop(set.M_INISPEED, motor)
+        GPIO.output(pin, False)
+        logging.debug(set.E_HIGH + " " + type_exit_name)
+        add_event(type_exit_name, set.E_HIGH, type_exit)
+        beep(set.P_BU1, set.B_EDG)
+    else:
+        # Stop the motor
+        GPIO.output(pin, False)
+    
+    # Logging and event stop
     logging.debug(set.E_LOW + " Channel: %s", channel)
     add_event(pin_name, set.E_LOW, channel)
 
@@ -206,4 +232,4 @@ def slow_stop(vel, motor):
     logging.debug("SLOW DOWN STOP - INI SPEED %s", vel)
     for i in range(vel, 0, -1):
         motor.ChangeDutyCycle(i)
-        time.sleep(0.008)
+        time.sleep(0.005)

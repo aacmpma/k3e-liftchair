@@ -2,7 +2,7 @@ import os
 import logging
 
 # CONS MOTOR
-M_INISPEED = 100
+M_INISPEED = 10
 
 
 # CONS BEEP TYPES
