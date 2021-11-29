@@ -46,10 +46,10 @@ def step1():
         time.sleep(5)
 
 def step2():
-    p=GPIO.PWM(GBW,100)
+    p=GPIO.PWM(GFW,99)
     print("---- Paso a Paso #2 ---")
     while True:
-        p.start(10) 
+        p.start(50) 
         time.sleep(2)
         #p.ChangeDutyCycle(2) 
         #time.sleep(2)

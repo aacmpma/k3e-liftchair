@@ -34,13 +34,13 @@ try:
         print("**** STATUS GPIO ****")
         print("")
         print("")
-        print("GPSW1 --> " + str(GPIO.input(GPSW1)))
-        print("GPSW2 --> " + str(GPIO.input(GPSW2)))
-        print("GPSW3 --> " + str(GPIO.input(GPSW3)))
-        print("GPBTU --> " + str(GPIO.input(GPBTU)))
-        print("GPBTD --> " + str(GPIO.input(GPBTD)))
-        print("GPCH1 --> " + str(GPIO.input(GPCH1)))
-        print("GPCH2 --> " + str(GPIO.input(GPCH2)))
+        print("GPSW1 MAS ARRIBA - 22 --> " + str(GPIO.input(GPSW1)))
+        print("GPSW2 MEDIO - 27 --> " + str(GPIO.input(GPSW2)))
+        print("GPSW3 MAS ABAJO - 17 --> " + str(GPIO.input(GPSW3)))
+        print("GPBTU BAJAR - 19 --> " + str(GPIO.input(GPBTU)))
+        print("GPBTD SUBIR - 26 --> " + str(GPIO.input(GPBTD)))
+        print("GPCH1 PIE - 13 --> " + str(GPIO.input(GPCH1)))
+        print("GPCH2 SILLA - 21 --> " + str(GPIO.input(GPCH2)))
         sleep(0.250)         # wait 0.1 seconds  
   
 finally:                   # this block will run no matter how the try block exits  
