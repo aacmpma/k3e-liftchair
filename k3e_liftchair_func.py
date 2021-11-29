@@ -229,7 +229,7 @@ def move_motor(channel):
 
 # Slow stop
 def slow_stop(vel, motor):
-    logging.debug("SLOW DOWN STOP - INI SPEED %s", vel)
+    logging.debug("SLOW DOWN STOP - INIT SPEED: %s", vel)
     for i in range(vel, 0, -1):
         motor.ChangeDutyCycle(i)
         time.sleep(0.005)
