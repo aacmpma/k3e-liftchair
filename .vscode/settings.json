@@ -10,8 +10,7 @@
             "driver": "MariaDB",
             "name": "K3E_LIFTCHAIR",
             "database": "K3E_LIFTCHAIR",
-            "username": "k3e_liftchair",
-            "password": "2de9ll3"
+            "username": "k3e_liftchair"
         }
     ]
 }
