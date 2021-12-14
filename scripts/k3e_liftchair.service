@@ -1,0 +1,14 @@
+[Unit]
+Description=Script que levanta el servicio K3E LIFT CHAIR
+After=network-online.target mariadb.service
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/opt/k3e_liftchair/k3e_liftchair.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

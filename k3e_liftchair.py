@@ -15,8 +15,17 @@ import k3e_liftchair_check_battery as tcb
 # ============== MAIN ==============
 if __name__ == "__main__":
     try:
+        os.system("clear")
+        file = os.path.dirname(__file__)+"/"+os.path.splitext(os.path.basename(__file__))[0]+".log"
+
+        print("============================================================")
+        print("                       K3E Lift Chair                       ")
+        print("============================================================")
+        print("Log:", file)
+        print("============================================================")
+
         # Enable logging
-        set.log(logging.DEBUG)
+        set.log(file, logging.DEBUG)
 
         # Create database connection
         fun.create_connection_pool()
@@ -25,22 +34,17 @@ if __name__ == "__main__":
         # Catch Kill Signal
         signal.signal(signal.SIGTERM, fun.signal_term_handler)
 
+        # Init event 
         fun.add_event("K3E Lift Chair", set.E_INI)
-        os.system("clear")
-        print("================================")
-        print("        K3E Lift Chair          ")
-        print("================================")
 
         # Setup GPIO
         fun.setupGPIO()
 
         # Add event detection
         logging.debug("Adding GPIO event detection")
-        GPIO.add_event_detect(set.P_SWU, GPIO.RISING, callback = fun.move_motor, bouncetime = 500)
-        GPIO.add_event_detect(set.P_SWD, GPIO.RISING, callback = fun.move_motor, bouncetime = 500)
-        GPIO.add_event_detect(set.P_SEU, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
-        GPIO.add_event_detect(set.P_SEC, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
-        GPIO.add_event_detect(set.P_SED, GPIO.RISING, callback = fun.edge_switch, bouncetime = 500)
+        GPIO.add_event_detect(set.P_SWU, GPIO.RISING, callback = fun.move_motor_up, bouncetime = 100)
+        GPIO.add_event_detect(set.P_SWD, GPIO.RISING, callback = fun.move_motor_down, bouncetime = 100)
+        GPIO.add_event_detect(set.P_SEC, GPIO.RISING, callback = fun.edge_switch_center, bouncetime = 100)
 
         # Start Thread check_battery
         logging.debug("Start thread check battery")
@@ -49,9 +53,11 @@ if __name__ == "__main__":
         thread_cb.start()
 
         while True:
+            if set.exit_thread_check_battery:
+                break
             now = datetime.now()
             current_time = now.strftime("%H:%M:%S")
-            print("Current Time:", current_time)
+            #print("Current Time:", current_time)
             time.sleep(5)
 
     except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:

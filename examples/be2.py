@@ -11,18 +11,18 @@ import RPi.GPIO as GPIO, time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-GPIO.setup(18, GPIO.OUT)
+GPIO.setup(16, GPIO.OUT)
 #setup for second buzzer in case you want to try harmonies
-GPIO.setup(20,GPIO.OUT)
+#GPIO.setup(16,GPIO.OUT)
 
-tone1 = GPIO.PWM(18, 100)
+tone1 = GPIO.PWM(16, 100)
 
 #this is a setup for a second buzzer
-tone2 = GPIO.PWM(20, 250)
+#tone2 = GPIO.PWM(16, 250)
 
 #50 seems to be the all around best value for duty cycle for buzzers
 tone1.start(50)
-tone2.start(0)
+#tone2.start(0)
 
 #Note frequencies, starting with a C
 #speaker works good from 32hz to about 500hz, so the first four octaves here, fifth octave just for fun
